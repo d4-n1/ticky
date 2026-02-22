@@ -1,9 +1,12 @@
+// Sirve para anclar el scroll en la parte inferior
+import { useEffect, useRef } from 'react';
+
 const ExpenseRow = (props) => {
   return (
     <div className='col-span-full grid grid-cols-subgrid px-1 py-0.5'>
       <div className='pr-[1ch]'>
         <select
-          value={props.selected}
+          value={props.category}
           className='w-[3ch] appearance-none focus:bg-grey focus:outline-none'
         >
           <option>HOG</option>
@@ -14,14 +17,14 @@ const ExpenseRow = (props) => {
       <div className='pr-[1ch]'>
         <input
           className='w-full focus:bg-grey focus:outline-none'
-          value={'Alquiler'}
+          value={props.name}
         />
       </div>
       <div>
         <input
           type='number'
           className='w-[10ch] text-right focus:bg-grey focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
-          value={'785.00'}
+          value={props.amount}
         />
       </div>
     </div>
@@ -47,19 +50,22 @@ const Divider = () => {
   );
 };
 
-const Total = () => {
+const Total = ({ expenses }) => {
+  let total = 0;
+
+  expenses.map((expense) => {
+    total += expense.amount;
+  });
+
   return (
     <div className='col-span-full flex place-content-between bg-black text-white py-0.5 px-1 font-normal'>
       <p>TOTAL</p>
-      <p>00,00</p>
+      <p>{total}</p>
     </div>
   );
 };
 
-// Sirve para anclar el scroll en la parte inferior
-import { useEffect, useRef } from 'react';
-
-const Ticket = () => {
+const Ticket = ({ expenses }) => {
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -74,47 +80,24 @@ const Ticket = () => {
       </h1>
       <Divider />
       <div className='col-span-full grid grid-cols-subgrid px-1 py-0.5 text-dark-grey'>
-        <p>CAT</p>
+        <p className='pr-[1ch]'>CAT</p>
         <p>NOMBRE</p>
         <p className='text-end'>EUR</p>
       </div>
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <ExpenseRow selected={'SUS'} />
-      <AddExpense label={'NUEVO GASTO (⌘ N)'} />
+
+      {expenses.map((expense) => {
+        return (
+          <ExpenseRow
+            category={expense.category}
+            name={expense.name}
+            amount={expense.amount}
+          />
+        );
+      })}
+
+      <AddExpense label={'NUEVO GASTO (⌘N)'} />
       <Divider />
-      <Total />
+      <Total expenses={expenses} />
       <Divider />
       <div className='col-span-full text-center px-1 py-0.5'>BUEN DÍA :^)</div>
 
