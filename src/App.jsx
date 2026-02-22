@@ -1,8 +1,11 @@
+import Ticket from './components/Ticket';
+
 function App() {
   return (
     <>
-      <div>
-        <h1 class='text-4xl font-bold underline'>Hello world!</h1>
+      <div className='w-dvw h-dvh bg-grey flex flex-col items-center font-mono font-medium overflow-auto'>
+        <div className='grow' />
+        <Ticket />
       </div>
     </>
   );
