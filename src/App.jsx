@@ -1,4 +1,5 @@
 import Ticket from './components/Ticket';
+import useStickToBottom from './hooks/useStickToBottom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const App = () => {
@@ -113,9 +114,11 @@ const App = () => {
     setFocusMode(mode);
   }, []);
 
+  const { containerRef, bottomRef } = useStickToBottom(expenses.length);
+
   return (
     <>
-      <div className='w-dvw h-dvh bg-grey flex flex-col items-center font-mono font-medium overflow-auto'>
+      <div ref={containerRef} className='w-dvw h-dvh bg-grey flex flex-col items-center font-mono font-medium overflow-auto'>
         <div className='grow' />
         <Ticket
           expenses={expenses}
@@ -124,6 +127,7 @@ const App = () => {
           focusedRow={focusedRow}
           focusMode={focusMode}
           onFocusRow={handleFocusRow}
+          bottomRef={bottomRef}
         />
       </div>
     </>

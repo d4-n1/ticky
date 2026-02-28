@@ -1,4 +1,3 @@
-// Sirve para anclar el scroll en la parte inferior
 import { useEffect, useRef } from 'react';
 
 const ExpenseRow = (props) => {
@@ -96,12 +95,7 @@ const Total = ({ expenses }) => {
   );
 };
 
-const Ticket = ({ expenses, onChange, onAdd, focusedRow, focusMode, onFocusRow }) => {
-  const bottomRef = useRef(null);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView();
-  }, []);
+const Ticket = ({ expenses, onChange, onAdd, focusedRow, focusMode, onFocusRow, bottomRef }) => {
 
   return (
     <div className='grid grid-cols-[auto_1fr_auto] p-[4ch] bg-white relative mt-20'>
