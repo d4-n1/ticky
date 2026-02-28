@@ -7,22 +7,22 @@ const App = () => {
     {
       category: 'hogar',
       name: 'Alquiler',
-      amount: 500,
+      amount: '500,00',
     },
     {
       category: 'test',
       name: 'galletas',
-      amount: 2.6,
+      amount: '2,60',
     },
     {
       category: 'suscripciones',
       name: 'Xbox Game Pass',
-      amount: 19.99,
+      amount: '19,99',
     },
     {
       category: 'supermercados',
       name: 'LIDL',
-      amount: 60.53,
+      amount: '60,53',
     },
   ]);
 

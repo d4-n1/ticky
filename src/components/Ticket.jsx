@@ -1,5 +1,22 @@
 import { useEffect, useRef } from 'react';
 
+const formatAmount = (value) => {
+  const normalized = String(value).replace(',', '.');
+  const parsed = parseFloat(normalized);
+  if (isNaN(parsed)) return '0,00';
+  return parsed.toFixed(2).replace('.', ',');
+};
+
+const filterAmountInput = (value) => {
+  let filtered = value.replace(/\./g, ',');
+  filtered = filtered.replace(/[^0-9,]/g, '');
+  const parts = filtered.split(',');
+  if (parts.length > 2) {
+    filtered = parts[0] + ',' + parts.slice(1).join('');
+  }
+  return filtered;
+};
+
 const ExpenseRow = (props) => {
   const firstInputRef = useRef(null);
 
@@ -47,10 +64,21 @@ const ExpenseRow = (props) => {
       <div>
         <input
           name='amount'
-          type='number'
-          className='w-[10ch] text-right focus:bg-grey focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+          type='text'
+          inputMode='decimal'
+          className='w-[10ch] text-right focus:bg-grey focus:outline-none'
           value={props.amount}
-          onChange={(e) => props.onChange(props.index, e)}
+          onChange={(e) => {
+            const filtered = filterAmountInput(e.target.value);
+            props.onChange(props.index, {
+              target: { name: 'amount', value: filtered },
+            });
+          }}
+          onBlur={(e) => {
+            props.onChange(props.index, {
+              target: { name: 'amount', value: formatAmount(e.target.value) },
+            });
+          }}
           onFocus={handleFocus}
         />
       </div>
@@ -83,14 +111,15 @@ const Divider = () => {
 const Total = ({ expenses }) => {
   let total = 0;
 
-  expenses.map((expense) => {
-    total += Number(expense.amount);
+  expenses.forEach((expense) => {
+    const parsed = parseFloat(String(expense.amount).replace(',', '.'));
+    if (!isNaN(parsed)) total += parsed;
   });
 
   return (
     <div className='col-span-full flex place-content-between bg-black text-white py-0.5 px-1 font-normal'>
       <p>TOTAL</p>
-      <p>{total}</p>
+      <p>{formatAmount(total)}</p>
     </div>
   );
 };
