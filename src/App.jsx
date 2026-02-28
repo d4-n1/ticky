@@ -1,5 +1,5 @@
 import Ticket from './components/Ticket';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const App = () => {
   const [expenses, setExpenses] = useState([
@@ -25,6 +25,20 @@ const App = () => {
     },
   ]);
 
+  const addExpense = () => {
+    const newExpense = { category: '', name: '', amount: '' };
+    setExpenses((prev) => prev.concat(newExpense));
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'n') addExpense();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleChange = (index, e) => {
     const { name, value } = e.target;
     setExpenses((prev) =>
@@ -36,7 +50,11 @@ const App = () => {
     <>
       <div className='w-dvw h-dvh bg-grey flex flex-col items-center font-mono font-medium overflow-auto'>
         <div className='grow' />
-        <Ticket expenses={expenses} onChange={handleChange} />
+        <Ticket
+          expenses={expenses}
+          onChange={handleChange}
+          onAdd={addExpense}
+        />
       </div>
     </>
   );
