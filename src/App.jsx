@@ -1,7 +1,8 @@
 import Ticket from './components/Ticket';
+import { useState } from 'react';
 
 const App = () => {
-  const expenses = [
+  const [expenses, setExpenses] = useState([
     {
       category: 'hogar',
       name: 'Alquiler',
@@ -22,13 +23,20 @@ const App = () => {
       name: 'LIDL',
       amount: 60.53,
     },
-  ];
+  ]);
+
+  const handleChange = (index, e) => {
+    const { name, value } = e.target;
+    setExpenses((prev) =>
+      prev.map((row, i) => (i === index ? { ...row, [name]: value } : row)),
+    );
+  };
 
   return (
     <>
       <div className='w-dvw h-dvh bg-grey flex flex-col items-center font-mono font-medium overflow-auto'>
         <div className='grow' />
-        <Ticket expenses={expenses} />
+        <Ticket expenses={expenses} onChange={handleChange} />
       </div>
     </>
   );

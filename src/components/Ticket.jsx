@@ -6,8 +6,10 @@ const ExpenseRow = (props) => {
     <div className='col-span-full grid grid-cols-subgrid px-1 py-0.5'>
       <div className='pr-[1ch]'>
         <select
+          name='category'
           value={props.category}
           className='w-[3ch] appearance-none focus:bg-grey focus:outline-none'
+          onChange={(e) => props.onChange(props.index, e)}
         >
           <option>HOG</option>
           <option>SUS</option>
@@ -16,15 +18,19 @@ const ExpenseRow = (props) => {
       </div>
       <div className='pr-[1ch]'>
         <input
+          name='name'
           className='w-full focus:bg-grey focus:outline-none'
           value={props.name}
+          onChange={(e) => props.onChange(props.index, e)}
         />
       </div>
       <div>
         <input
+          name='amount'
           type='number'
           className='w-[10ch] text-right focus:bg-grey focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
           value={props.amount}
+          onChange={(e) => props.onChange(props.index, e)}
         />
       </div>
     </div>
@@ -54,7 +60,7 @@ const Total = ({ expenses }) => {
   let total = 0;
 
   expenses.map((expense) => {
-    total += expense.amount;
+    total += Number(expense.amount);
   });
 
   return (
@@ -65,7 +71,7 @@ const Total = ({ expenses }) => {
   );
 };
 
-const Ticket = ({ expenses }) => {
+const Ticket = ({ expenses, onChange }) => {
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -85,12 +91,15 @@ const Ticket = ({ expenses }) => {
         <p className='text-end'>EUR</p>
       </div>
 
-      {expenses.map((expense) => {
+      {expenses.map((expense, index) => {
         return (
           <ExpenseRow
+            key={index}
+            index={index}
             category={expense.category}
             name={expense.name}
             amount={expense.amount}
+            onChange={onChange}
           />
         );
       })}
