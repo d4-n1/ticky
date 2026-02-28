@@ -3,9 +3,7 @@ import useStickToBottom from './hooks/useStickToBottom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const App = () => {
-  const [categories, setCategories] = useState([
-    'hogar', 'suscripciones', 'supermercados',
-  ]);
+  const [categories, setCategories] = useState([]);
 
   const addCategory = useCallback((name) => {
     const lower = name.toLowerCase().trim();
@@ -17,28 +15,7 @@ const App = () => {
     return lower;
   }, []);
 
-  const [expenses, setExpenses] = useState([
-    {
-      category: 'hogar',
-      name: 'Alquiler',
-      amount: '500,00',
-    },
-    {
-      category: 'test',
-      name: 'galletas',
-      amount: '2,60',
-    },
-    {
-      category: 'suscripciones',
-      name: 'Xbox Game Pass',
-      amount: '19,99',
-    },
-    {
-      category: 'supermercados',
-      name: 'LIDL',
-      amount: '60,53',
-    },
-  ]);
+  const [expenses, setExpenses] = useState([]);
 
   const [focusedRow, setFocusedRow] = useState(null);
   const [focusMode, setFocusMode] = useState('row');
