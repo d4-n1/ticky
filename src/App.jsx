@@ -115,8 +115,10 @@ const App = () => {
             else setFocusMode('input');
             break;
           default:
-            e.preventDefault();
-            setFocusMode('input');
+            if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+              e.preventDefault();
+              setFocusMode('input');
+            }
             break;
         }
         return;

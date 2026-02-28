@@ -30,14 +30,9 @@ const CategoryInput = ({ value, categories, onChange, onAddCategory, onFocus, in
     setInputValue('');
   };
 
-  const handleFocusInput = (e) => {
-    setIsOpen(true);
-    setInputValue(value || '');
+  const handleFocusInput = () => {
     setHighlightedIndex(0);
     onFocus?.();
-    if (e.isTrusted) {
-      requestAnimationFrame(() => inputRef?.current?.select());
-    }
   };
 
   const handleBlur = () => {
@@ -48,13 +43,30 @@ const CategoryInput = ({ value, categories, onChange, onAddCategory, onFocus, in
   };
 
   const handleChange = (e) => {
+    if (!isOpen) return;
     setInputValue(e.target.value);
     setHighlightedIndex(0);
-    if (!isOpen) setIsOpen(true);
+  };
+
+  const enterEditMode = (initialValue) => {
+    setIsOpen(true);
+    setInputValue(initialValue);
+    setHighlightedIndex(0);
   };
 
   const handleKeyDown = (e) => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      if (e.key === 'Backspace' || e.key === 'Delete') {
+        e.preventDefault();
+        e.nativeEvent.stopImmediatePropagation();
+        enterEditMode('');
+      } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        e.nativeEvent.stopImmediatePropagation();
+        enterEditMode(e.key);
+      }
+      return;
+    }
 
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === 'Escape') {
       e.nativeEvent.stopImmediatePropagation();
