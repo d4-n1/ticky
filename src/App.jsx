@@ -85,21 +85,46 @@ const App = () => {
       // Nivel ROW: hay fila seleccionada, navegamos entre filas
       if (row !== null) {
         switch (e.key) {
-          case 'ArrowDown': e.preventDefault(); setFocusedRow((row + 1) % len); break;
-          case 'ArrowUp':   e.preventDefault(); setFocusedRow((row - 1 + len) % len); break;
-          case 'Escape':    setFocusedRow(null); break;
-          case 'Enter':     if (e.shiftKey) addExpense(); else setFocusMode('input'); break;
-          default:          e.preventDefault(); setFocusMode('input'); break;
+          case 'ArrowDown':
+            e.preventDefault();
+            setFocusedRow((row + 1) % len);
+            break;
+          case 'ArrowUp':
+            e.preventDefault();
+            setFocusedRow((row - 1 + len) % len);
+            break;
+          case 'Escape':
+            setFocusedRow(null);
+            break;
+          case 'Enter':
+            if (e.shiftKey) addExpense();
+            else setFocusMode('input');
+            break;
+          default:
+            e.preventDefault();
+            setFocusMode('input');
+            break;
         }
         return;
       }
 
       // Sin foco: flechas seleccionan primera/última fila, 'n' añade gasto
-      if (len === 0) { if (e.key === 'Enter' && e.shiftKey) addExpense(); return; }
+      if (len === 0) {
+        if (e.key === 'Enter' && e.shiftKey) addExpense();
+        return;
+      }
       switch (e.key) {
-        case 'ArrowDown': e.preventDefault(); setFocusedRow(0); break;
-        case 'ArrowUp':   e.preventDefault(); setFocusedRow(len - 1); break;
-        case 'Enter':     if (e.shiftKey) addExpense(); break;
+        case 'ArrowDown':
+          e.preventDefault();
+          setFocusedRow(0);
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          setFocusedRow(len - 1);
+          break;
+        case 'Enter':
+          if (e.shiftKey) addExpense();
+          break;
       }
     };
 
@@ -123,7 +148,10 @@ const App = () => {
 
   return (
     <>
-      <div ref={containerRef} className='w-dvw h-dvh bg-grey flex flex-col items-center font-mono font-medium overflow-auto'>
+      <div
+        ref={containerRef}
+        className='w-dvw h-dvh bg-grey flex flex-col items-center font-mono overflow-auto'
+      >
         <div className='grow' />
         <Ticket
           expenses={expenses}

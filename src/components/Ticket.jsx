@@ -97,7 +97,7 @@ const AddExpense = (props) => {
   return (
     <button
       onClick={props.onClick}
-      className='flex flex-row col-span-full px-1 py-0.5 items-center font-bold focus:bg-grey focus:outline-none'
+      className='flex flex-row col-span-full px-1 py-0.5 items-center font-semibold focus:bg-grey focus:outline-none'
     >
       <div className='w-[3ch] mr-[1ch] bg-black text-white flex items-center justify-center h-4'>
         <img src='/src/assets/icons/plus.svg' alt='+' />
