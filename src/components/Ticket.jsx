@@ -39,7 +39,10 @@ const ExpenseRow = (props) => {
 
 const AddExpense = (props) => {
   return (
-    <button className='flex flex-row col-span-full px-1 py-0.5 items-center font-bold focus:bg-grey focus:outline-none'>
+    <button
+      onClick={props.onClick}
+      className='flex flex-row col-span-full px-1 py-0.5 items-center font-bold focus:bg-grey focus:outline-none'
+    >
       <div className='w-[3ch] mr-[1ch] bg-black text-white flex items-center justify-center h-4'>
         <img src='/src/assets/icons/plus.svg' alt='+' />
       </div>
@@ -71,7 +74,7 @@ const Total = ({ expenses }) => {
   );
 };
 
-const Ticket = ({ expenses, onChange }) => {
+const Ticket = ({ expenses, onChange, onAdd }) => {
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -104,7 +107,7 @@ const Ticket = ({ expenses, onChange }) => {
         );
       })}
 
-      <AddExpense label={'NUEVO GASTO (⌘N)'} />
+      <AddExpense label={'NUEVO GASTO (N)'} onClick={onAdd} />
       <Divider />
       <Total expenses={expenses} />
       <Divider />
