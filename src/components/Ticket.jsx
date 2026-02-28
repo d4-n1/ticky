@@ -140,7 +140,7 @@ const Ticket = ({
   onAddCategory,
 }) => {
   return (
-    <div className='grid grid-cols-[auto_1fr_auto] p-[4ch] bg-white relative mt-20'>
+    <div className='grid grid-cols-[auto_1fr_auto] p-[4ch] bg-white relative mt-32'>
       <div className='w-full h-1 absolute -top-1 left-0 bg-[url(/src/assets/ticket-border.svg)] bg-repeat-x bg-size-[1ch]'></div>
       <h1 className='col-span-full text-center font-semibold text-2xl'>
         ENERO
