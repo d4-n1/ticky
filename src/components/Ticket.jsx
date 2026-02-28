@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import CategoryInput from './CategoryInput';
 
 const formatAmount = (value) => {
   const normalized = String(value).replace(',', '.');
@@ -45,18 +46,14 @@ const ExpenseRow = (props) => {
       }`}
     >
       <div className='pr-[1ch]'>
-        <select
-          ref={firstInputRef}
-          name='category'
+        <CategoryInput
+          inputRef={firstInputRef}
           value={props.category}
-          className='w-[3ch] appearance-none focus:bg-grey focus:outline-none'
+          categories={props.categories}
           onChange={(e) => props.onChange(props.index, e)}
+          onAddCategory={props.onAddCategory}
           onFocus={handleFocus}
-        >
-          <option>HOG</option>
-          <option>SUS</option>
-          <option>SUP</option>
-        </select>
+        />
       </div>
       <div className='pr-[1ch]'>
         <input
@@ -139,6 +136,8 @@ const Ticket = ({
   focusMode,
   onFocusRow,
   bottomRef,
+  categories,
+  onAddCategory,
 }) => {
   return (
     <div className='grid grid-cols-[auto_1fr_auto] p-[4ch] bg-white relative mt-20'>
@@ -165,6 +164,8 @@ const Ticket = ({
             isFocused={focusedRow === index}
             focusMode={focusMode}
             onFocusRow={onFocusRow}
+            categories={categories}
+            onAddCategory={onAddCategory}
           />
         );
       })}

@@ -3,6 +3,20 @@ import useStickToBottom from './hooks/useStickToBottom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const App = () => {
+  const [categories, setCategories] = useState([
+    'hogar', 'suscripciones', 'supermercados',
+  ]);
+
+  const addCategory = useCallback((name) => {
+    const lower = name.toLowerCase().trim();
+    if (!lower) return '';
+    setCategories((prev) => {
+      if (prev.includes(lower)) return prev;
+      return [...prev, lower];
+    });
+    return lower;
+  }, []);
+
   const [expenses, setExpenses] = useState([
     {
       category: 'hogar',
@@ -161,6 +175,8 @@ const App = () => {
           focusMode={focusMode}
           onFocusRow={handleFocusRow}
           bottomRef={bottomRef}
+          categories={categories}
+          onAddCategory={addCategory}
         />
       </div>
     </>
