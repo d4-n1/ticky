@@ -88,7 +88,7 @@ const App = () => {
           case 'ArrowDown': e.preventDefault(); setFocusedRow((row + 1) % len); break;
           case 'ArrowUp':   e.preventDefault(); setFocusedRow((row - 1 + len) % len); break;
           case 'Escape':    setFocusedRow(null); break;
-          case 'Enter':     if (e.shiftKey) addExpense(); break;
+          case 'Enter':     if (e.shiftKey) addExpense(); else setFocusMode('input'); break;
           default:          e.preventDefault(); setFocusMode('input'); break;
         }
         return;

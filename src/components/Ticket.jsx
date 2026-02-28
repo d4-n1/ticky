@@ -19,15 +19,21 @@ const filterAmountInput = (value) => {
 
 const ExpenseRow = (props) => {
   const firstInputRef = useRef(null);
+  const skipAutoFocus = useRef(false);
 
   useEffect(() => {
     if (props.isFocused && props.focusMode === 'input') {
+      if (skipAutoFocus.current) {
+        skipAutoFocus.current = false;
+        return;
+      }
       firstInputRef.current?.focus();
     }
   }, [props.isFocused, props.focusMode]);
 
   const handleFocus = () => {
     if (!props.isFocused || props.focusMode !== 'input') {
+      skipAutoFocus.current = true;
       props.onFocusRow(props.index, 'input');
     }
   };
@@ -61,12 +67,13 @@ const ExpenseRow = (props) => {
           onFocus={handleFocus}
         />
       </div>
-      <div>
+      <div className='flex justify-end'>
         <input
           name='amount'
           type='text'
           inputMode='decimal'
-          className='w-[10ch] text-right focus:bg-grey focus:outline-none'
+          className='text-right focus:bg-grey focus:outline-none'
+          style={{ width: `${Math.max(props.amount.length, 1)}ch` }}
           value={props.amount}
           onChange={(e) => {
             const filtered = filterAmountInput(e.target.value);
