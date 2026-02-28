@@ -2,14 +2,34 @@
 import { useEffect, useRef } from 'react';
 
 const ExpenseRow = (props) => {
+  const firstInputRef = useRef(null);
+
+  useEffect(() => {
+    if (props.isFocused && props.focusMode === 'input') {
+      firstInputRef.current?.focus();
+    }
+  }, [props.isFocused, props.focusMode]);
+
+  const handleFocus = () => {
+    if (!props.isFocused || props.focusMode !== 'input') {
+      props.onFocusRow(props.index, 'input');
+    }
+  };
+
   return (
-    <div className='col-span-full grid grid-cols-subgrid px-1 py-0.5'>
+    <div
+      className={`col-span-full grid grid-cols-subgrid px-1 py-0.5${
+        props.isFocused && props.focusMode === 'row' ? ' bg-grey' : ''
+      }`}
+    >
       <div className='pr-[1ch]'>
         <select
+          ref={firstInputRef}
           name='category'
           value={props.category}
           className='w-[3ch] appearance-none focus:bg-grey focus:outline-none'
           onChange={(e) => props.onChange(props.index, e)}
+          onFocus={handleFocus}
         >
           <option>HOG</option>
           <option>SUS</option>
@@ -22,6 +42,7 @@ const ExpenseRow = (props) => {
           className='w-full focus:bg-grey focus:outline-none'
           value={props.name}
           onChange={(e) => props.onChange(props.index, e)}
+          onFocus={handleFocus}
         />
       </div>
       <div>
@@ -31,6 +52,7 @@ const ExpenseRow = (props) => {
           className='w-[10ch] text-right focus:bg-grey focus:outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
           value={props.amount}
           onChange={(e) => props.onChange(props.index, e)}
+          onFocus={handleFocus}
         />
       </div>
     </div>
@@ -74,7 +96,7 @@ const Total = ({ expenses }) => {
   );
 };
 
-const Ticket = ({ expenses, onChange, onAdd }) => {
+const Ticket = ({ expenses, onChange, onAdd, focusedRow, focusMode, onFocusRow }) => {
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -103,6 +125,9 @@ const Ticket = ({ expenses, onChange, onAdd }) => {
             name={expense.name}
             amount={expense.amount}
             onChange={onChange}
+            isFocused={focusedRow === index}
+            focusMode={focusMode}
+            onFocusRow={onFocusRow}
           />
         );
       })}

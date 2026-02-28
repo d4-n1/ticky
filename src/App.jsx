@@ -1,5 +1,5 @@
 import Ticket from './components/Ticket';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 const App = () => {
   const [expenses, setExpenses] = useState([
@@ -25,19 +25,81 @@ const App = () => {
     },
   ]);
 
-  const addExpense = () => {
-    const newExpense = { category: '', name: '', amount: '' };
-    setExpenses((prev) => prev.concat(newExpense));
-  };
+  const [focusedRow, setFocusedRow] = useState(null);
+  const [focusMode, setFocusMode] = useState('row');
+
+  const focusedRowRef = useRef(focusedRow);
+
+  const expensesRef = useRef(expenses);
+
+  useEffect(() => {
+    focusedRowRef.current = focusedRow;
+  }, [focusedRow]);
+
+  useEffect(() => {
+    expensesRef.current = expenses;
+  }, [expenses]);
+
+  // Clamping: si se borra una fila y focusedRow queda fuera de rango
+  if (focusedRow !== null && expenses.length === 0) {
+    setFocusedRow(null);
+  } else if (focusedRow !== null && focusedRow >= expenses.length) {
+    setFocusedRow(expenses.length - 1);
+  }
+
+  const addExpense = useCallback(() => {
+    setExpenses((prev) => {
+      const newExpenses = prev.concat({ category: '', name: '', amount: '' });
+      setFocusedRow(newExpenses.length - 1);
+      setFocusMode('input');
+      return newExpenses;
+    });
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'n') addExpense();
+      const row = focusedRowRef.current;
+
+      const len = expensesRef.current.length;
+      const target = e.target;
+      const isInput =
+        target.tagName === 'INPUT' ||
+        target.tagName === 'SELECT' ||
+        target.tagName === 'TEXTAREA';
+
+      // Nivel INPUT: el foco real está en un input, solo manejar Escape
+      if (isInput) {
+        if (e.key === 'Escape') {
+          target.blur();
+          setFocusMode('row');
+        }
+        return;
+      }
+
+      // Nivel ROW: hay fila seleccionada, navegamos entre filas
+      if (row !== null) {
+        switch (e.key) {
+          case 'ArrowDown': e.preventDefault(); setFocusedRow((row + 1) % len); break;
+          case 'ArrowUp':   e.preventDefault(); setFocusedRow((row - 1 + len) % len); break;
+          case 'Escape':    setFocusedRow(null); break;
+          case 'n':         addExpense(); break;
+          default:          e.preventDefault(); setFocusMode('input'); break;
+        }
+        return;
+      }
+
+      // Sin foco: flechas seleccionan primera/última fila, 'n' añade gasto
+      if (len === 0) { if (e.key === 'n') addExpense(); return; }
+      switch (e.key) {
+        case 'ArrowDown': e.preventDefault(); setFocusedRow(0); break;
+        case 'ArrowUp':   e.preventDefault(); setFocusedRow(len - 1); break;
+        case 'n':         addExpense(); break;
+      }
     };
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [addExpense]);
 
   const handleChange = (index, e) => {
     const { name, value } = e.target;
@@ -45,6 +107,11 @@ const App = () => {
       prev.map((row, i) => (i === index ? { ...row, [name]: value } : row)),
     );
   };
+
+  const handleFocusRow = useCallback((index, mode) => {
+    setFocusedRow(index);
+    setFocusMode(mode);
+  }, []);
 
   return (
     <>
@@ -54,6 +121,9 @@ const App = () => {
           expenses={expenses}
           onChange={handleChange}
           onAdd={addExpense}
+          focusedRow={focusedRow}
+          focusMode={focusMode}
+          onFocusRow={handleFocusRow}
         />
       </div>
     </>
