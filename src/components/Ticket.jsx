@@ -124,8 +124,15 @@ const Total = ({ expenses }) => {
   );
 };
 
-const Ticket = ({ expenses, onChange, onAdd, focusedRow, focusMode, onFocusRow, bottomRef }) => {
-
+const Ticket = ({
+  expenses,
+  onChange,
+  onAdd,
+  focusedRow,
+  focusMode,
+  onFocusRow,
+  bottomRef,
+}) => {
   return (
     <div className='grid grid-cols-[auto_1fr_auto] p-[4ch] bg-white relative mt-20'>
       <div className='w-full h-1 absolute -top-1 left-0 bg-[url(/src/assets/ticket-border.svg)] bg-repeat-x bg-size-[1ch]'></div>
@@ -155,7 +162,7 @@ const Ticket = ({ expenses, onChange, onAdd, focusedRow, focusMode, onFocusRow, 
         );
       })}
 
-      <AddExpense label={'NUEVO GASTO (N)'} onClick={onAdd} />
+      <AddExpense label={'NUEVO GASTO (⇧⏎)'} onClick={onAdd} />
       <Divider />
       <Total expenses={expenses} />
       <Divider />

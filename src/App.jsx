@@ -68,9 +68,14 @@ const App = () => {
         target.tagName === 'SELECT' ||
         target.tagName === 'TEXTAREA';
 
-      // Nivel INPUT: el foco real está en un input, solo manejar Escape
+      // Nivel INPUT: el foco real está en un input
       if (isInput) {
-        if (e.key === 'Escape') {
+        if (e.key === 'Enter' && e.shiftKey) {
+          e.preventDefault();
+          target.blur();
+          addExpense();
+        } else if (e.key === 'Escape' || e.key === 'Enter') {
+          e.preventDefault();
           target.blur();
           setFocusMode('row');
         }
@@ -83,18 +88,18 @@ const App = () => {
           case 'ArrowDown': e.preventDefault(); setFocusedRow((row + 1) % len); break;
           case 'ArrowUp':   e.preventDefault(); setFocusedRow((row - 1 + len) % len); break;
           case 'Escape':    setFocusedRow(null); break;
-          case 'n':         addExpense(); break;
+          case 'Enter':     if (e.shiftKey) addExpense(); break;
           default:          e.preventDefault(); setFocusMode('input'); break;
         }
         return;
       }
 
       // Sin foco: flechas seleccionan primera/última fila, 'n' añade gasto
-      if (len === 0) { if (e.key === 'n') addExpense(); return; }
+      if (len === 0) { if (e.key === 'Enter' && e.shiftKey) addExpense(); return; }
       switch (e.key) {
         case 'ArrowDown': e.preventDefault(); setFocusedRow(0); break;
         case 'ArrowUp':   e.preventDefault(); setFocusedRow(len - 1); break;
-        case 'n':         addExpense(); break;
+        case 'Enter':     if (e.shiftKey) addExpense(); break;
       }
     };
 
