@@ -30,7 +30,8 @@ const CategoryInput = ({ value, categories, onChange, onAddCategory, onFocus, in
     setInputValue('');
   };
 
-  const handleFocusInput = () => {
+  const handleFocusInput = (e) => {
+    e.target.select();
     setHighlightedIndex(0);
     onFocus?.();
   };
@@ -103,7 +104,7 @@ const CategoryInput = ({ value, categories, onChange, onAddCategory, onFocus, in
       <input
         ref={inputRef}
         name="category"
-        className="w-[3ch] focus:bg-grey focus:outline-none"
+        className="w-[3ch] selection:bg-grey focus:outline-none"
         value={isOpen ? inputValue : displayValue}
         onChange={handleChange}
         onFocus={handleFocusInput}
