@@ -58,7 +58,7 @@ const ExpenseRow = (props) => {
       <div className='pr-[1ch]'>
         <input
           name='name'
-          className='w-full focus:bg-grey focus:outline-none'
+          className='w-full selection:bg-grey focus:outline-none'
           value={props.name}
           onChange={(e) => props.onChange(props.index, e)}
           onFocus={handleFocus}
@@ -69,7 +69,7 @@ const ExpenseRow = (props) => {
           name='amount'
           type='text'
           inputMode='decimal'
-          className='text-right focus:bg-grey focus:outline-none'
+          className='text-right selection:bg-grey focus:outline-none'
           style={{ width: `${Math.max(props.amount.length, 1)}ch` }}
           value={props.amount}
           onChange={(e) => {
@@ -94,9 +94,9 @@ const AddExpense = (props) => {
   return (
     <button
       onClick={props.onClick}
-      className='flex flex-row col-span-full px-1 py-0.5 items-center font-semibold focus:bg-grey focus:outline-none'
+      className='flex flex-row col-span-full px-1 py-0.5 mt-6 items-center font-semibold focus:bg-grey focus:outline-none'
     >
-      <div className='w-[3ch] mr-[1ch] bg-black text-white flex items-center justify-center h-4'>
+      <div className='w-[3ch] mr-[1ch] bg-black text-white flex items-center justify-center h-5'>
         <img src='/src/assets/icons/plus.svg' alt='+' />
       </div>
       <div>{props.label}</div>
@@ -121,7 +121,7 @@ const Total = ({ expenses }) => {
   });
 
   return (
-    <div className='col-span-full flex place-content-between bg-black text-white py-0.5 px-1 font-normal'>
+    <div className='col-span-full flex place-content-between bg-black text-white py-0.5 px-1 font-medium'>
       <p>TOTAL</p>
       <p>{formatAmount(total)}</p>
     </div>
@@ -170,7 +170,7 @@ const Ticket = ({
         );
       })}
 
-      <AddExpense label={'NUEVO GASTO (⇧⏎)'} onClick={onAdd} />
+      <AddExpense label={'AÑADIR GASTO'} onClick={onAdd} />
       <Divider />
       <Total expenses={expenses} />
       <Divider />
