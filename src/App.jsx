@@ -1,5 +1,6 @@
 import Ticket from './components/Ticket';
 import useStickToBottom from './hooks/useStickToBottom';
+import formatAmount from './utils/formatAmount';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const App = () => {
@@ -40,6 +41,38 @@ const App = () => {
     setFocusedRow(expenses.length); // Clamp al botón como máximo
   }
 
+  const normalizeExpense = (expense) => {
+    const amountNum = parseFloat(String(expense.amount).replace(',', '.'));
+    const isEmpty =
+      expense.category === '' &&
+      expense.name === '' &&
+      (expense.amount === '' || isNaN(amountNum) || amountNum === 0);
+    if (isEmpty) return null;
+    return {
+      ...expense,
+      name: expense.name || 'Gasto',
+      amount: formatAmount(expense.amount),
+    };
+  };
+
+  const exitInputMode = useCallback(() => {
+    const row = focusedRowRef.current;
+    const current = expensesRef.current;
+    if (row !== null && row < current.length) {
+      const normalized = normalizeExpense(current[row]);
+      if (normalized === null) {
+        setExpenses((prev) => prev.filter((_, i) => i !== row));
+        const newLen = current.length - 1;
+        setFocusedRow(newLen > 0 ? Math.min(row, newLen - 1) : 0);
+      } else {
+        setExpenses((prev) =>
+          prev.map((exp, i) => (i === row ? normalized : exp)),
+        );
+      }
+    }
+    setFocusMode('row');
+  }, []);
+
   const addExpense = useCallback(() => {
     setExpenses((prev) => {
       const newExpenses = prev.concat({ category: '', name: '', amount: '' });
@@ -65,11 +98,12 @@ const App = () => {
         if (e.key === 'Enter' && e.shiftKey) {
           e.preventDefault();
           target.blur();
+          exitInputMode();
           addExpense();
         } else if (e.key === 'Escape' || e.key === 'Enter') {
           e.preventDefault();
           target.blur();
-          setFocusMode('row');
+          exitInputMode();
         }
         return;
       }
@@ -124,7 +158,7 @@ const App = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [addExpense]);
+  }, [addExpense, exitInputMode]);
 
   const handleChange = (index, e) => {
     const { name, value } = e.target;

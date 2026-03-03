@@ -1,12 +1,6 @@
 import { useEffect, useRef } from 'react';
 import CategoryInput from './CategoryInput';
-
-const formatAmount = (value) => {
-  const normalized = String(value).replace(',', '.');
-  const parsed = parseFloat(normalized);
-  if (isNaN(parsed)) return '0,00';
-  return parsed.toFixed(2).replace('.', ',');
-};
+import formatAmount from '../utils/formatAmount';
 
 const filterAmountInput = (value) => {
   let filtered = value.replace(/\./g, ',');
