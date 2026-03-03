@@ -95,11 +95,11 @@ const AddExpense = (props) => {
   return (
     <button
       onClick={props.onClick}
-      className={`flex flex-row col-span-full px-1 py-0.5 mt-6 items-center font-semibold focus:bg-grey focus:outline-none${
+      className={`flex flex-row col-span-full px-1 py-0.5 items-center font-semibold focus:bg-grey focus:outline-none${
         props.isFocused ? ' bg-grey' : ''
       }`}
     >
-      <div className='w-[3ch] mr-[1ch] bg-black text-white flex items-center justify-center h-5'>
+      <div className='w-[3ch] mr-[1ch] bg-grey flex items-center justify-center h-5'>
         <img src='/src/assets/icons/plus.svg' alt='+' />
       </div>
       <div>{props.label}</div>
@@ -174,7 +174,11 @@ const Ticket = ({
         );
       })}
 
-      <AddExpense label={'AÑADIR GASTO'} onClick={onAdd} isFocused={focusedRow === expenses.length} />
+      <AddExpense
+        label={'AÑADIR GASTO'}
+        onClick={onAdd}
+        isFocused={focusedRow === expenses.length}
+      />
       <Divider />
       <Total expenses={expenses} />
       <Divider />
