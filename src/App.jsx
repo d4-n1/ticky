@@ -18,6 +18,8 @@ const migrateExpenses = () => {
 };
 migrateExpenses();
 
+const MIN_YEAR = 2025;
+
 const App = () => {
   const now = new Date();
   const nowYear = now.getFullYear();
@@ -137,6 +139,7 @@ const App = () => {
             const newMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
             const newYear =
               selectedMonth === 0 ? selectedYear - 1 : selectedYear;
+            if (newYear < MIN_YEAR) return;
             setSelectedMonth(newMonth);
             setSelectedYear(newYear);
             return;
@@ -157,6 +160,7 @@ const App = () => {
           }
           case 'ArrowLeft':
             e.preventDefault();
+            if (selectedYear <= MIN_YEAR) return;
             setSelectedYear(selectedYear - 1);
             return;
           case 'ArrowRight': {
@@ -282,8 +286,10 @@ const App = () => {
         selectedMonth={selectedMonth}
         nowYear={nowYear}
         nowMonth={nowMonth}
+        minYear={MIN_YEAR}
         onChangeYear={(delta) => {
           const newYear = selectedYear + delta;
+          if (newYear < MIN_YEAR) return;
           setSelectedYear(newYear);
           if (newYear === nowYear && selectedMonth > nowMonth) {
             setSelectedMonth(nowMonth);
