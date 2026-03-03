@@ -131,6 +131,20 @@ const App = () => {
             else if (e.shiftKey) addExpense();
             else setFocusMode('input');
             break;
+          case 'Backspace':
+            if (!isButton) {
+              e.preventDefault();
+              setExpenses((prev) => prev.filter((_, i) => i !== row));
+              const newLen = len - 1;
+              if (newLen === 0) {
+                setFocusedRow(0);
+              } else if (row === 0) {
+                setFocusedRow(0);
+              } else {
+                setFocusedRow(row - 1);
+              }
+            }
+            break;
           default:
             if (!isButton && e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
               e.preventDefault();
