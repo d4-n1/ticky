@@ -13,7 +13,7 @@ const Sidebar = ({
   const isFutureYear = selectedYear > nowYear;
 
   return (
-    <div className='h-dvh bg-grey font-mono flex flex-col items-center justify-center shrink-0 select-none pb-4 pl-8'>
+    <div className='fixed left-0 top-0 h-dvh bg-grey font-mono flex flex-col items-center justify-center shrink-0 select-none pb-4 pl-8 z-10'>
       {/* Selector de año */}
       <div className='flex items-center mb-4'>
         <button onClick={() => onChangeYear(-1)} className='size-10 text-2xl'>

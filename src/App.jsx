@@ -276,7 +276,7 @@ const App = () => {
   const { containerRef, bottomRef } = useStickToBottom(expenses.length);
 
   return (
-    <div className='flex w-dvw h-dvh'>
+    <div className='relative w-dvw h-dvh'>
       <Sidebar
         selectedYear={selectedYear}
         selectedMonth={selectedMonth}
@@ -294,7 +294,7 @@ const App = () => {
 
       <div
         ref={containerRef}
-        className='flex-1 h-dvh bg-grey flex flex-col items-center font-mono overflow-auto'
+        className='absolute inset-0 h-dvh bg-grey flex flex-col items-center font-mono overflow-auto'
       >
         <div className='grow' />
         <Ticket
