@@ -8,6 +8,14 @@
   font-display: swap;
 }
 
+* {
+  user-select: none;
+}
+
+input, textarea {
+  user-select: text;
+}
+
 @theme {
   --font-mono: 'Geist Mono', monospace;
   --color-grey: #d0d0d0;

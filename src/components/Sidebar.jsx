@@ -16,14 +16,14 @@ const Sidebar = ({
     <div className='fixed left-0 top-0 h-dvh font-mono flex flex-col items-center justify-center shrink-0 select-none pb-4 pl-8 z-10'>
       {/* Selector de año */}
       <div className='flex items-center mb-4'>
-        <button onClick={() => onChangeYear(-1)} className='size-10 text-2xl'>
+        <button onClick={() => onChangeYear(-1)} className='size-10 text-xl'>
           ←
         </button>
-        <span className='font-semibold text-2xl'>{selectedYear}</span>
+        <span className='font-semibold text-xl'>{selectedYear}</span>
         <button
           onClick={() => onChangeYear(1)}
           disabled={!canGoForwardYear}
-          className={`text-2xl px-1${canGoForwardYear ? '' : ' text-dark-grey cursor-default'} size-10`}
+          className={`text-xl px-1${canGoForwardYear ? '' : ' text-dark-grey cursor-default'} size-10`}
         >
           →
         </button>
