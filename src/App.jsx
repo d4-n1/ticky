@@ -1,26 +1,61 @@
 import Ticket from './components/Ticket';
+import Sidebar from './components/Sidebar';
+import { MONTH_NAMES } from './utils/months';
 import useStickToBottom from './hooks/useStickToBottom';
 import formatAmount from './utils/formatAmount';
 import useLocalStorage from './hooks/useLocalStorage';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+// Migración: mover datos de clave vieja a clave con año/mes actual
+const migrateExpenses = () => {
+  const oldData = localStorage.getItem('ticky_expenses');
+  if (oldData !== null) {
+    const now = new Date();
+    const newKey = `ticky_expenses_${now.getFullYear()}_${now.getMonth() + 1}`;
+    localStorage.setItem(newKey, oldData);
+    localStorage.removeItem('ticky_expenses');
+  }
+};
+migrateExpenses();
+
 const App = () => {
+  const now = new Date();
+  const nowYear = now.getFullYear();
+  const nowMonth = now.getMonth(); // 0-11
+
+  const [selectedYear, setSelectedYear] = useState(nowYear);
+  const [selectedMonth, setSelectedMonth] = useState(nowMonth);
+
   const [categories, setCategories] = useLocalStorage('categories', []);
 
-  const addCategory = useCallback((name) => {
-    const lower = name.toLowerCase().trim();
-    if (!lower) return '';
-    setCategories((prev) => {
-      if (prev.includes(lower)) return prev;
-      return [...prev, lower];
-    });
-    return lower;
-  }, []);
+  const addCategory = useCallback(
+    (name) => {
+      const lower = name.toLowerCase().trim();
+      if (!lower) return '';
+      setCategories((prev) => {
+        if (prev.includes(lower)) return prev;
+        return [...prev, lower];
+      });
+      return lower;
+    },
+    [setCategories],
+  );
 
-  const [expenses, setExpenses] = useLocalStorage('expenses', []);
+  const [expenses, setExpenses] = useLocalStorage(
+    `expenses_${selectedYear}_${selectedMonth + 1}`,
+    [],
+  );
 
   const [focusedRow, setFocusedRow] = useState(null);
   const [focusMode, setFocusMode] = useState('row');
+
+  // Reset foco al cambiar mes/año
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    setFocusedRow(null);
+    setFocusMode('row');
+  }, [selectedYear, selectedMonth]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const focusedRowRef = useRef(focusedRow);
 
@@ -72,7 +107,7 @@ const App = () => {
       }
     }
     setFocusMode('row');
-  }, []);
+  }, [setExpenses]);
 
   const addExpense = useCallback(() => {
     setExpenses((prev) => {
@@ -81,7 +116,7 @@ const App = () => {
       setFocusMode('input');
       return newExpenses;
     });
-  }, []);
+  }, [setExpenses]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -93,6 +128,49 @@ const App = () => {
         target.tagName === 'INPUT' ||
         target.tagName === 'SELECT' ||
         target.tagName === 'TEXTAREA';
+
+      // Navegación temporal con Shift+Arrow (solo fuera de inputs)
+      if (e.shiftKey && !isInput) {
+        switch (e.key) {
+          case 'ArrowUp': {
+            e.preventDefault();
+            const newMonth = selectedMonth === 0 ? 11 : selectedMonth - 1;
+            const newYear =
+              selectedMonth === 0 ? selectedYear - 1 : selectedYear;
+            setSelectedMonth(newMonth);
+            setSelectedYear(newYear);
+            return;
+          }
+          case 'ArrowDown': {
+            e.preventDefault();
+            const newMonth = selectedMonth === 11 ? 0 : selectedMonth + 1;
+            const newYear =
+              selectedMonth === 11 ? selectedYear + 1 : selectedYear;
+            if (
+              newYear > nowYear ||
+              (newYear === nowYear && newMonth > nowMonth)
+            )
+              return;
+            setSelectedMonth(newMonth);
+            setSelectedYear(newYear);
+            return;
+          }
+          case 'ArrowLeft':
+            e.preventDefault();
+            setSelectedYear(selectedYear - 1);
+            return;
+          case 'ArrowRight': {
+            e.preventDefault();
+            if (selectedYear >= nowYear) return;
+            const newYear = selectedYear + 1;
+            setSelectedYear(newYear);
+            if (newYear === nowYear && selectedMonth > nowMonth) {
+              setSelectedMonth(nowMonth);
+            }
+            return;
+          }
+        }
+      }
 
       // Nivel INPUT: el foco real está en un input
       if (isInput) {
@@ -173,7 +251,15 @@ const App = () => {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [addExpense, exitInputMode]);
+  }, [
+    addExpense,
+    exitInputMode,
+    setExpenses,
+    selectedYear,
+    selectedMonth,
+    nowYear,
+    nowMonth,
+  ]);
 
   const handleChange = (index, e) => {
     const { name, value } = e.target;
@@ -190,10 +276,25 @@ const App = () => {
   const { containerRef, bottomRef } = useStickToBottom(expenses.length);
 
   return (
-    <>
+    <div className='flex w-dvw h-dvh'>
+      <Sidebar
+        selectedYear={selectedYear}
+        selectedMonth={selectedMonth}
+        nowYear={nowYear}
+        nowMonth={nowMonth}
+        onChangeYear={(delta) => {
+          const newYear = selectedYear + delta;
+          setSelectedYear(newYear);
+          if (newYear === nowYear && selectedMonth > nowMonth) {
+            setSelectedMonth(nowMonth);
+          }
+        }}
+        onChangeMonth={setSelectedMonth}
+      />
+
       <div
         ref={containerRef}
-        className='w-dvw h-dvh bg-grey flex flex-col items-center font-mono overflow-auto'
+        className='flex-1 h-dvh bg-grey flex flex-col items-center font-mono overflow-auto'
       >
         <div className='grow' />
         <Ticket
@@ -206,9 +307,10 @@ const App = () => {
           bottomRef={bottomRef}
           categories={categories}
           onAddCategory={addCategory}
+          monthName={MONTH_NAMES[selectedMonth]}
         />
       </div>
-    </>
+    </div>
   );
 };
 
