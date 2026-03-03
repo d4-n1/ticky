@@ -55,6 +55,13 @@ const ExpenseRow = (props) => {
           className='w-full selection:bg-grey focus:outline-none'
           value={props.name}
           onChange={(e) => props.onChange(props.index, e)}
+          onBlur={(e) => {
+            if (e.target.value.trim() === '') {
+              props.onChange(props.index, {
+                target: { name: 'name', value: 'Gasto' },
+              });
+            }
+          }}
           onFocus={handleFocus}
         />
       </div>

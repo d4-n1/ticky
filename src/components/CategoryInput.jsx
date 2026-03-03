@@ -38,6 +38,9 @@ const CategoryInput = ({ value, categories, onChange, onAddCategory, onFocus, in
 
   const handleBlur = () => {
     blurTimeout.current = setTimeout(() => {
+      if (isOpen && inputValue === '') {
+        onChange({ target: { name: 'category', value: '' } });
+      }
       setIsOpen(false);
       setInputValue('');
     }, 150);
@@ -69,7 +72,10 @@ const CategoryInput = ({ value, categories, onChange, onAddCategory, onFocus, in
       return;
     }
 
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === 'Escape') {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Escape') {
+      e.nativeEvent.stopImmediatePropagation();
+    }
+    if (e.key === 'Enter' && inputValue.trim() !== '') {
       e.nativeEvent.stopImmediatePropagation();
     }
 
@@ -84,7 +90,11 @@ const CategoryInput = ({ value, categories, onChange, onAddCategory, onFocus, in
         break;
       case 'Enter':
         e.preventDefault();
-        if (highlightedIndex < filtered.length) {
+        if (inputValue.trim() === '') {
+          onChange({ target: { name: 'category', value: '' } });
+          setIsOpen(false);
+          setInputValue('');
+        } else if (highlightedIndex < filtered.length) {
           select(filtered[highlightedIndex]);
         } else if (showCreate) {
           const name = onAddCategory(inputValue);
