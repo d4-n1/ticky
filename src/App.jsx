@@ -1,10 +1,11 @@
 import Ticket from './components/Ticket';
 import useStickToBottom from './hooks/useStickToBottom';
 import formatAmount from './utils/formatAmount';
+import useLocalStorage from './hooks/useLocalStorage';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 const App = () => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useLocalStorage('categories', []);
 
   const addCategory = useCallback((name) => {
     const lower = name.toLowerCase().trim();
@@ -16,7 +17,7 @@ const App = () => {
     return lower;
   }, []);
 
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpenses] = useLocalStorage('expenses', []);
 
   const [focusedRow, setFocusedRow] = useState(null);
   const [focusMode, setFocusMode] = useState('row');
