@@ -35,6 +35,7 @@ const ExpenseRow = (props) => {
 
   return (
     <div
+      data-row-index={props.index}
       className={`col-span-full grid grid-cols-subgrid px-1 py-0.5${
         props.isFocused && props.focusMode === 'row' ? ' bg-grey' : ''
       }`}

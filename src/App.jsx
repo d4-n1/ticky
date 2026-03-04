@@ -265,6 +265,28 @@ const App = () => {
     nowMonth,
   ]);
 
+  // Clic fuera de la fila activa → quitar foco y limpiar filas vacías
+  useEffect(() => {
+    const handleMouseDown = (e) => {
+      const row = focusedRowRef.current;
+      if (row === null) return;
+
+      // Buscar si el clic fue dentro de la fila activa
+      const rowEl = e.target.closest(`[data-row-index="${row}"]`);
+      if (rowEl) return;
+
+      // Si estábamos editando, normalizar/eliminar la fila
+      if (focusMode === 'input') {
+        exitInputMode();
+      }
+
+      setFocusedRow(null);
+    };
+
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => document.removeEventListener('mousedown', handleMouseDown);
+  }, [focusMode, exitInputMode]);
+
   const handleChange = (index, e) => {
     const { name, value } = e.target;
     setExpenses((prev) =>
