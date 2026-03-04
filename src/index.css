@@ -12,7 +12,12 @@
   user-select: none;
 }
 
-input, textarea {
+body {
+  background-color: var(--color-grey);
+}
+
+input,
+textarea {
   user-select: text;
 }
 
